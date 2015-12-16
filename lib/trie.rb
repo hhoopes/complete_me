@@ -8,6 +8,10 @@ class Trie
     @root = Node.new
   end
 
+  def find_leaves(node) #recurse down each branch finding all leaves / word flags
+
+  end
+
 
 
 end

@@ -8,11 +8,11 @@ class CompleteMe
   attr_reader :trie
 
   def initialize
-    @trie = Trie.new
+    @root = Node.new
     @wordcount = 0
   end
 
-  def populate(list = "/usr/share/dict/words")
+  def populate(list = "words.txt")
     if File.file?(list)
       list = File.read(list)
     end
@@ -22,19 +22,37 @@ class CompleteMe
   end
 
   def insert(string)
-    current = @trie.root
+    node = @trie.root
     string.chars.each do | char |
-      current.children[char] ||= Node.new
-      current = current.children[char]
+      node.children[char] ||= Node.new
+      node = node.children[char]
     end
-    current.isword = true
+    node.isword = true
     @wordcount += 1
   end
 
   def suggest(prefix)
-    current = @trie.root
-    prefix.chars.map do | char |
-      
+    node = @trie.root
+
+    prefix.each do |char|
+      node = node[char]
+    end
+
+    move_along(node)
+  end
+
+    def move_along(node)
+    suggestions = []
+    suggestions = node.children.each do | key |
+      if node.children.nil?
+        return node
+      elsif node
+
+      move_along(node)
+
+    end
+
+
   end
 
   def select(prefix, word)

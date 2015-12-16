@@ -1,8 +1,9 @@
 require 'pry'
 require 'minitest'
-require 'trie'
-require 'node'
-require 'test_helper'
+require_relative '../lib/trie'
+require_relative '../lib/node'
+require_relative '../complete_me'
+require_relative 'test_helper'
 require '../lib/node'
 
 class NodeTest <Minitest::Test
