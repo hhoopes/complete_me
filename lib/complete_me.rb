@@ -11,7 +11,7 @@ class CompleteMe
     @wordcount = 0
   end
 
-  def populate(list = "words.txt")
+  def populate(list = "./words.txt")
     if File.file?(list)
       list = File.read(list)
     end
@@ -24,10 +24,11 @@ class CompleteMe
     node = @trie.root
     string.chars.each do | char |
       node.children[char] ||= Node.new
+      prev_node = node
       node = node.children[char]
     end
     node.isword = true
-    @wordcount += 1
+    @wordcount += 1 unless prev_node = node
   end
 
   def suggest(prefix)
@@ -51,9 +52,3 @@ class CompleteMe
     @wordcount
   end
 end
-
-c = CompleteMe.new
-binding.pry
-c.populate("test\ntestes\ntesters")
-c.select("tes", "testers")
-c.suggest("tes")

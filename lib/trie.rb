@@ -30,11 +30,4 @@ class Trie
       end
     end
   end
-
-  # def weight(prefix)
-  #   if weighted.has_value?("prefix")
-  #     return weighted("prefix")
-  #   else return false
-  #   end
-  # end
 end

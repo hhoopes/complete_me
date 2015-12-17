@@ -2,8 +2,6 @@ require 'pry'
 require 'minitest'
 require_relative 'test_helper'
 require_relative '../lib/complete_me'
-require_relative '../lib/node'
-require_relative '../lib/trie'
 
 class CompleteMeTest <Minitest::Test
   attr_reader :complete
@@ -31,7 +29,7 @@ class CompleteMeTest <Minitest::Test
   def test_populate_dictionary_loads_both_a_file_and_word_list
     list = complete.populate("siesta\nslumber\ncatnap")
     complete2 = CompleteMe.new
-    complete2.populate('sleep.txt')
+    complete2.populate('./sleep.txt')
     assert_equal list.count, complete2.count
   end
 
@@ -49,5 +47,13 @@ class CompleteMeTest <Minitest::Test
     complete.populate("pizza\npizzeria\npizzicato\npizzazz\napple")
     complete.select("piz", "pizzazz")
     assert_equal ["pizzazz", "pizza", "pizzeria", "pizzicato"], complete.suggest("piz")
+  end
+
+  def test_selecting_multiple_words_for_a_single_prefix_returns_all_words_weighted
+    complete.populate("pizza\npizzeria\npizzicato\npizzazz")
+    complete.select("piz", "pizzazz")
+    complete.select("piz", "pizzazz")
+    complete.select("piz", "pizzicato")
+    assert_equal ["pizzazz", "piccicato", "pizza", "pizzeria"], complete.suggest("piz")
   end
 end
