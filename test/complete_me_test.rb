@@ -3,6 +3,7 @@ require 'minitest'
 require_relative 'test_helper'
 require_relative '../lib/complete_me'
 require_relative '../lib/node'
+require_relative '../lib/trie'
 
 class CompleteMeTest <Minitest::Test
   attr_reader :complete
@@ -11,26 +12,27 @@ class CompleteMeTest <Minitest::Test
     @complete = CompleteMe.new
   end
 
-  def test_completeme_starts_with_an_empty_hash_at_its_root
-    binding.pry
-    assert_instance_of Hash, @root.children
-  end
-
   def test_inserting_single_word_generates_a_listing_in_the_trie
     complete.insert("difficult")
+    assert_equal 1, complete.count
+  end
+
+  def test_inserting_duplicate_word_doesnt_create_extra_word
+    complete.insert("jinx")
+    complete.insert("jinx")
     assert_equal 1, complete.count
   end
 
   def test_populate_dictionary_uses_default_dictionary_if_no_list_provided
     complete.populate
     assert_equal 235886, complete.count
-
   end
 
   def test_populate_dictionary_loads_both_a_file_and_word_list
     list = complete.populate("siesta\nslumber\ncatnap")
-    file = complete.populate('sleep.txt')
-    assert_equal list.count, file.count
+    complete2 = CompleteMe.new
+    complete2.populate('sleep.txt')
+    assert_equal list.count, complete2.count
   end
 
   def test_suggest_returns_nested_suggestions
@@ -41,6 +43,11 @@ class CompleteMeTest <Minitest::Test
   def test_suggest_returns_many_suggestions_but_not_incomplete_matches
     complete.populate("hooped\nho\nhooping\nhoopla\nhoople\n hoopless\nhoopoe\nhoopstick\nhoopwood\nahoope\nhoopesheidi\nhoo")
     assert_equal ["hooped", "hoopesheidi", "hooping", "hoopla", "hoople", "hoopoe", "hoopstick", "hoopwood"], complete.suggest("hoop")
+  end
 
+  def test_select_weights_a_single_suggestion_for_chosen_word
+    complete.populate("pizza\npizzeria\npizzicato\npizzazz\napple")
+    complete.select("piz", "pizzazz")
+    assert_equal ["pizzazz", "pizza", "pizzeria", "pizzicato"], complete.suggest("piz")
   end
 end

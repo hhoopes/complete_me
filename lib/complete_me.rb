@@ -2,10 +2,9 @@ require 'pry'
 require_relative 'node'
 require_relative 'trie'
 
-
 class CompleteMe
   attr_accessor :wordcount, :root
-  attr_reader
+  attr_reader :trie
 
   def initialize
     @trie = Trie.new
@@ -32,28 +31,29 @@ class CompleteMe
   end
 
   def suggest(prefix)
-    node = @trie.root
-    prefix.chars.each do |char|
-      node = node.children[char]
-    end
+    node = trie.find_node(prefix)
     suggestions =[]
-    if node.isword
+    if trie.weighted[prefix] != nil
+      suggestions << trie.weighted[prefix]
+    end
+    if node.isword == true
       suggestions << prefix
     end
-    @trie.search(node, prefix, suggestions)
-    suggestions
+    trie.search(node, prefix, suggestions)
+    suggestions.uniq
   end
 
   def select(prefix, word)
-
+    trie.weighted[prefix] = word
   end
 
   def count
     @wordcount
   end
-
-
 end
-complete =CompleteMe.new
-complete.insert("dog")
-complete.populate
+
+c = CompleteMe.new
+binding.pry
+c.populate("test\ntestes\ntesters")
+c.select("tes", "testers")
+c.suggest("tes")
