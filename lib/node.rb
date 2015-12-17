@@ -1,12 +1,9 @@
 require 'pry'
-require_relative "trie"
 
-class Node
-  attr_accessor :isword, :weight, :children
+class Node  #should define as a struct
+  attr_accessor :isword, :children
   def initialize
     @isword = false
     @children = Hash.new
-    @weight
   end
-
 end

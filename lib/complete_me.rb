@@ -1,14 +1,14 @@
 require 'pry'
-require_relative 'trie'
 require_relative 'node'
+require_relative 'trie'
 
 
 class CompleteMe
-  attr_accessor :wordcount
-  attr_reader :trie
+  attr_accessor :wordcount, :root
+  attr_reader
 
   def initialize
-    @root = Node.new
+    @trie = Trie.new
     @wordcount = 0
   end
 
@@ -33,29 +33,19 @@ class CompleteMe
 
   def suggest(prefix)
     node = @trie.root
-
-    prefix.each do |char|
-      node = node[char]
+    prefix.chars.each do |char|
+      node = node.children[char]
     end
-
-    move_along(node)
-  end
-
-    def move_along(node)
-    suggestions = []
-    suggestions = node.children.each do | key |
-      if node.children.nil?
-        return node
-      elsif node
-
-      move_along(node)
-
+    suggestions =[]
+    if node.isword
+      suggestions << prefix
     end
-
-
+    @trie.search(node, prefix, suggestions)
+    suggestions
   end
 
   def select(prefix, word)
+
   end
 
   def count
